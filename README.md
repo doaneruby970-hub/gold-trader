@@ -21,7 +21,7 @@
 ## 安装
 
 ```bash
-git clone https://github.com/yourname/gold-trader.git
+git clone https://github.com/doaneruby970-hub/gold-trader.git
 cd gold-trader
 pip install backtrader pandas
 ```

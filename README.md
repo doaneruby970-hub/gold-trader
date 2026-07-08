@@ -1,24 +1,24 @@
-# Gold Trader - 黄金量化交易回测系统
+# Gold Trader - Gold Quantitative Trading Backtest System
 
-基于 backtrader 框架的黄金(XAUUSD)自动化交易策略回测与参数优化工具集。包含 V5 到 V8 共四个版本的策略迭代，覆盖网格交易、趋势跟踪、突破交易等多种思路。
+A backtrader-based automated trading strategy backtesting and parameter optimization toolkit for gold (XAUUSD). Covers four strategy iterations from V5 to V8, spanning grid trading, trend following, breakout trading, and more.
 
-## 功能特性
+## Features
 
-- **V5 网格 EA（终极进化版）**：支持多空双向的 ATR 动态网格交易，止损锚定最后一单而非均价，RSI 智能分级平仓，动态追踪止盈
-- **V6 网格 EA（长期稳定版）**：仅做多（基于黄金长期牛市判断），RSI(14) 替代 RSI(5) 减少噪音，最小盈亏比保护，冷却期机制避免连续亏损
-- **V7 趋势跟踪 EA（多时间框架版）**：EMA50/EMA200 双均线确认趋势方向，ADX 过滤震荡市，固定止盈目标 ATRx5，支持多空双向
-- **V8 突破跟踪 EA**：基于 24 小时高点的突破入场策略，配合 EMA 趋势过滤和 ADX 强度确认，纯移动止损出场
-- **参数优化脚本**：V6/V7/V8 各自配备暴力参数扫描脚本，网格搜索最优参数组合
-- **ECN 成本模拟**：所有策略均内置 ECN 点差+佣金成本估算
-- **完整统计输出**：胜率、盈亏比、Profit Factor、平均盈亏、净收益等回测指标
+- **V5 Grid EA (Ultimate Evolution Edition)**: Supports long/short bidirectional ATR dynamic grid trading, stop-loss anchored to the last position rather than average price, RSI intelligent tiered liquidation, dynamic trailing take-profit.
+- **V6 Grid EA (Long-Term Stability Edition)**: Long-only (based on gold's secular bull thesis), RSI(14) replacing RSI(5) to reduce noise, minimum risk/reward ratio protection, cooldown mechanism to avoid consecutive losses.
+- **V7 Trend-Following EA (Multi-Timeframe Edition)**: EMA50/EMA200 dual moving-average trend direction confirmation, ADX filtering for ranging markets, fixed take-profit target ATRx5, supports long/short bidirectional.
+- **V8 Breakout-Tracking EA**: 24-hour high breakout entry strategy, combined with EMA trend filter and ADX strength confirmation, pure trailing stop exit.
+- **Parameter Optimization Scripts**: V6/V7/V8 each come with brute-force parameter scanning scripts, grid-searching for optimal parameter combinations.
+- **ECN Cost Simulation**: All strategies include built-in ECN spread + commission cost estimation.
+- **Complete Statistical Output**: Win rate, profit/loss ratio, Profit Factor, average profit/loss, net return, and other backtest metrics.
 
-## 环境要求
+## Requirements
 
 - Python 3.7+
 - backtrader
 - pandas
 
-## 安装
+## Installation
 
 ```bash
 git clone https://github.com/doaneruby970-hub/gold-trader.git
@@ -26,53 +26,53 @@ cd gold-trader
 pip install backtrader pandas
 ```
 
-## 配置
+## Configuration
 
-无需 .env 文件或环境变量。所有策略参数以硬编码常量类（`V5Config` / `V6Config` / `V7Config` / `V8Config`）形式定义在各策略文件顶部，可直接修改后运行。
+No `.env` file or environment variables required. All strategy parameters are defined as hardcoded constant classes (`V5Config` / `V6Config` / `V7Config` / `V8Config`) at the top of each strategy file and can be modified before running.
 
-需要准备数据文件：**GOLD_M5_202103100105_202603092005.csv**（黄金 5 分钟 K 线数据，Tab 分隔，包含 DATE、TIME、OPEN、HIGH、LOW、CLOSE、TICKVOL 列），放置于项目根目录。
+A data file is required: **GOLD_M5_202103100105_202603092005.csv** (gold 5-minute candlestick data, tab-separated, with DATE, TIME, OPEN, HIGH, LOW, CLOSE, TICKVOL columns), placed in the project root directory.
 
-## 使用方式
+## Usage
 
-回测单个策略：
+Backtest a single strategy:
 
 ```bash
-# V5 网格 EA（多空双向，RSI 分级平仓）
+# V5 Grid EA (long/short bidirectional, RSI tiered liquidation)
 python v5_grid_ea.py
 
-# V6 网格 EA（仅做多，长期稳定）
+# V6 Grid EA (long-only, long-term stability)
 python v6_grid_ea.py
 
-# V7 趋势跟踪 EA（多时间框架，ADX 过滤）
+# V7 Trend-Following EA (multi-timeframe, ADX filtering)
 python v7_grid_ea.py
 
-# V8 突破跟踪 EA（24h 高点突破 + 移动止损）
+# V8 Breakout-Tracking EA (24h high breakout + trailing stop)
 python v8_grid_ea.py
 ```
 
-参数优化（暴力扫描，输出所有组合结果）：
+Parameter optimization (brute-force scan, outputs all combination results):
 
 ```bash
-python v6_optimize.py   # V6 参数扫描：SL / Trail激活 / Trail回撤 / RSI买入阈值
-python v7_optimize.py   # V7 参数扫描：ADX阈值 / RSI买入 / TP目标 / SL倍数
-python v8_optimize.py   # V8 参数扫描：突破周期 / ADX阈值 / Trail距离
+python v6_optimize.py   # V6 parameter scan: SL / Trail activation / Trail retracement / RSI buy threshold
+python v7_optimize.py   # V7 parameter scan: ADX threshold / RSI buy / TP target / SL multiplier
+python v8_optimize.py   # V8 parameter scan: breakout period / ADX threshold / Trail distance
 ```
 
-## 策略对比
+## Strategy Comparison
 
-| 版本 | 策略类型 | 方向 | 入场信号 | 出场方式 | 网格层数 |
+| Version | Strategy Type | Direction | Entry Signal | Exit Method | Grid Layers |
 |------|---------|------|---------|---------|---------|
-| V5 | 网格交易 | 多+空 | EMA200趋势 + RSI(5)超买超卖 | 追踪止盈 / 动态止损 / RSI分级平仓 | 4 |
-| V6 | 网格交易 | 仅多 | EMA200趋势 + RSI(14)超卖 | 追踪止盈(仅回撤) / 固定止损 / 盈亏比保护 | 3 |
-| V7 | 趋势跟随 | 多+空 | EMA50/200 + ADX + RSI(14) | 固定止盈(ATRx5) / 止损 / 追踪止盈 | 2 |
-| V8 | 突破交易 | 仅多 | 24h高点突破 + EMA50/200 + ADX | ATR移动止损 / 趋势破坏 | 1(无网格) |
+| V5 | Grid Trading | Long+Short | EMA200 trend + RSI(5) overbought/oversold | Trailing TP / Dynamic SL / RSI tiered liquidation | 4 |
+| V6 | Grid Trading | Long-only | EMA200 trend + RSI(14) oversold | Trailing TP (retracement-only) / Fixed SL / R:R protection | 3 |
+| V7 | Trend Following | Long+Short | EMA50/200 + ADX + RSI(14) | Fixed TP (ATRx5) / SL / Trailing TP | 2 |
+| V8 | Breakout Trading | Long-only | 24h high breakout + EMA50/200 + ADX | ATR trailing stop / Trend breakdown | 1 (no grid) |
 
-## 注意事项
+## Notes
 
-1. **仅回测用途**：本项目为策略研究与回测工具，不包含实盘交易接口，不连接任何交易所或券商
-2. **数据依赖**：所有脚本均依赖本地 CSV 数据文件，文件缺失会导致运行失败
-3. **安装依赖**：`pip install -r requirements.txt`
-4. **策略参数硬编码**：所有参数以常量和类属性形式直接写在代码中，未提供命令行参数接口
-5. **V8 命名不准确**：`v8_grid_ea.py` 实际实现的是突破趋势跟踪策略，并非网格 EA，但仍沿用旧命名
-6. **回测假设**：初始资金 $100,000，佣金 0.03%，ECN 成本按 0.2 点差 + $5/手佣金估算
-7. **无风险控制层**：策略未实现最大回撤限制、当日亏损上限等风控逻辑，实盘使用需自行补充
+1. **Backtesting only**: This project is a strategy research and backtesting tool. It includes no live trading interfaces and connects to no exchanges or brokers.
+2. **Data dependency**: All scripts depend on a local CSV data file. A missing file will cause runtime failure.
+3. **Install dependencies**: `pip install -r requirements.txt`
+4. **Hardcoded strategy parameters**: All parameters are written directly in code as constants and class attributes. No CLI parameter interface is provided.
+5. **V8 naming inaccuracy**: `v8_grid_ea.py` actually implements a breakout trend-following strategy, not a grid EA, but retains the old naming convention.
+6. **Backtest assumptions**: Initial capital $100,000, commission 0.03%, ECN cost estimated at 0.2 spread + $5/lot commission.
+7. **No risk control layer**: The strategies do not implement max drawdown limits, daily loss caps, or other risk management logic. Live trading would require supplementary implementation.
